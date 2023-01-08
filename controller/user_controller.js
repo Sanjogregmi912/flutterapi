@@ -1,4 +1,6 @@
 const User =  require("../model/User")
+
+
 const registeruser =  ((req,res,next)=>{
     User.findOne({username : req.body.username})
     .then((user)=>{
@@ -9,17 +11,26 @@ const registeruser =  ((req,res,next)=>{
             return next(err)
         }
         else{
-           user =  new User(req.body)
-           user.save().then((user)=>{
-            res.json(user)
-           })
-           .catch(next)
+               
+                console.log(req.file)
+                console.log(req.body)
+                let profile = {
+                    ...req.body,
+                    profile : req.file.filename
+                    
+                }
+                User.create(profile)
+                .then(profile=>res.json({data:profile})).catch(next)
+            
+
            
         }
     })
    .catch(next)
 
-})
+}
+)
+
 
 const loginuser = ((req,res,next)=>{
     User.findOne({username : req.body.username,password:req.body.password}).then(user=>{
